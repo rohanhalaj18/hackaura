@@ -1,6 +1,6 @@
 # 🏥 Arogya-Vahini (Health-Flow)
 
-![Arogya-Vahini Banner](./arogya_readme_banner_1773364201695.png)
+![Arogya-Vahini Banner]()
 
 > **Empowering Healthcare with Intelligent Diagnostics & Seamless Connectivity.**
 
