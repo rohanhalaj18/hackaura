@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arogya - Sign In</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="portal-auth-page">
+  <div id="toast" class="toast"></div>
+
+  <div class="portal-auth-shell">
+    <div class="portal-card">
+      <div class="portal-card-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M3 12h4l2-6 4 12 3-8 2 2h3" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+        </svg>
+      </div>
+      <h1 class="portal-card-title">Portal Access</h1>
+      <p class="portal-card-subtitle">Secure login for healthcare professionals and patients.</p>
+
+      <div class="portal-segmented" aria-label="User type selection">
+        <input type="radio" name="login-role" id="login-role-doctor" checked>
+        <label for="login-role-doctor">Doctor</label>
+        <input type="radio" name="login-role" id="login-role-patient">
+        <label for="login-role-patient">Patient</label>
+      </div>
+
+      <form onsubmit="login(event)">
+        <div class="portal-input-group">
+          <label class="portal-input-label" for="email">Email Address</label>
+          <input id="email" type="email" placeholder="doctor@arogya.com" required>
+        </div>
+
+        <div class="portal-input-group">
+          <label class="portal-input-label" for="password">Password</label>
+          <input id="password" type="password" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="portal-submit-button">Sign In</button>
+      </form>
+
+      <div class="portal-auth-footer">
+        New to the platform? <a href="register.html">Register Now</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+</body>
+</html>

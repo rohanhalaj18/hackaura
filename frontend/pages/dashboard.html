@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arogya - Dashboard</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <style>
+    /* ── Clean Dashboard Grid ── */
+    .dash-layout {
+      display: flex;
+      gap: 28px;
+      align-items: stretch;
+      margin-top: 28px;
+    }
+    /* Left column: stats, appointments, list cards */
+    .dash-left {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      flex: 1 1 0;
+      min-width: 0;
+    }
+    /* Right column: Quick Actions (fixed width, full height) */
+    .dash-right {
+      width: 300px;
+      flex-shrink: 0;
+    }
+    /* Row inside left column */
+    .dash-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+    /* List cards: fixed height + scroll */
+    .dash-list-card {
+      display: flex;
+      flex-direction: column;
+      height: 360px;
+      overflow: hidden;
+    }
+    .dash-list-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-shrink: 0;
+    }
+    .dash-list-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Sora', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #181310;
+      letter-spacing: -0.03em;
+    }
+    .dash-list-head a {
+      color: #7f7368;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .dash-scroll {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-right: 4px;
+    }
+    .dash-scroll::-webkit-scrollbar { width: 4px; }
+    .dash-scroll::-webkit-scrollbar-track { background: rgba(24,18,12,0.04); border-radius: 4px; }
+    .dash-scroll::-webkit-scrollbar-thumb { background: rgba(232,130,12,0.35); border-radius: 4px; }
+    .dash-scroll::-webkit-scrollbar-thumb:hover { background: rgba(232,130,12,0.6); }
+
+    /* Quick Actions right panel */
+    .dash-quick {
+      border-radius: 30px;
+      background: linear-gradient(180deg, #181311 0%, #231b18 100%);
+      color: #f8f3eb;
+      padding: 28px;
+      box-shadow: 0 20px 36px rgba(64,48,18,0.08);
+      display: flex;
+      flex-direction: column;
+    }
+    .dash-quick-header {
+      margin-bottom: 28px;
+    }
+    .dash-quick-header h3 {
+      font-family: 'Sora', sans-serif;
+      font-size: 28px;
+      letter-spacing: -0.04em;
+      margin-bottom: 6px;
+    }
+    .dash-quick-header p { color: rgba(248,243,235,0.5); font-size: 14px; }
+    .dash-quick-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      flex: 1;
+    }
+  </style>
+</head>
+
+<body class="doctor-dashboard-page">
+  <div id="toast" class="toast"></div>
+
+  <!-- QR Scanner Modal -->
+  <div class="modal-overlay" id="qr-scanner-modal">
+    <div class="modal-content glass" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2 class="modal-title">Scan Patient QR Code</h2>
+        <button class="modal-close" onclick="closeQrScanner()"><i class="ri-close-line"></i></button>
+      </div>
+      <div style="text-align: center; margin-bottom: 20px;">
+        <button type="button" class="btn-small active" id="btn-scan-camera"
+          style="margin-right: 10px; background: var(--primary);">Scan via Camera</button>
+        <button type="button" class="btn-small" id="btn-upload-qr">Upload QR Image</button>
+      </div>
+      <div id="qr-reader" style="width: 100%; border-radius: 12px; overflow: hidden; background: rgba(0,0,0,0.2);">
+      </div>
+      <div id="qr-upload-container"
+        style="display: none; text-align: center; padding: 40px 20px; border: 2px dashed rgba(255,255,255,0.2); border-radius: 12px;">
+        <i class="ri-upload-cloud-2-line"
+          style="font-size: 48px; color: var(--primary); margin-bottom: 16px; display: block;"></i>
+        <p style="margin-bottom: 16px;">Select a QR code image to upload and scan</p>
+        <input type="file" id="qr-upload-file" accept="image/*" style="display: none;">
+        <button type="button" class="doctor-primary-button"
+          onclick="document.getElementById('qr-upload-file').click()">Choose File</button>
+      </div>
+    </div>
+  </div>
+  <!-- Hidden canvas for QR file scanning -->
+  <div id="_qr_upload_tmp_canvas" style="display:none;"></div>
+
+  <div class="doctor-shell">
+    <aside class="doctor-sidebar">
+      <div class="doctor-brand">
+        <span class="doctor-brand-mark"><i class="ri-pulse-line"></i></span>
+        <span>Arogya-Vahini</span>
+      </div>
+
+      <div class="doctor-profile-card">
+        <div class="doctor-profile-icon"><i class="ri-user-heart-line"></i></div>
+        <div>
+          <p class="doctor-profile-label">Doctor Profile</p>
+          <h2 id="user-info">Dr. Rajesh Kumar</h2>
+        </div>
+      </div>
+
+      <nav class="doctor-sidebar-nav">
+        <a href="../pages/dashboard.html" class="doctor-nav-item active"><i class="ri-pulse-line"></i><span>Overview</span></a>
+        <a href="../pages/referrals.html" class="doctor-nav-item"><i class="ri-file-transfer-line"></i><span>Referrals</span></a>
+        <a href="../pages/patients.html" class="doctor-nav-item"><i class="ri-user-heart-line"></i><span>Patients</span></a>
+        <a href="javascript:void(0)" onclick="openQrScanner()" class="doctor-nav-item"><i
+            class="ri-qr-scan-2-line"></i><span>Scan QR</span></a>
+        <a href="../pages/dashboard.html" class="doctor-nav-item"><i class="ri-database-2-line"></i><span>Health Vault</span></a>
+        <a href="../pages/dashboard.html" class="doctor-nav-item"><i class="ri-calendar-line"></i><span>Appointments</span></a>
+        <a href="../pages/dashboard.html" class="doctor-nav-item"><i
+            class="ri-vidicon-line"></i><span>Teleconsultation</span></a>
+      </nav>
+
+      <div class="doctor-system-status"><span></span> System Online</div>
+
+      <a href="../pages/login.html" class="doctor-signout"><i class="ri-logout-box-r-line"></i><span>Sign
+          Out</span></a>
+    </aside>
+
+    <main class="doctor-main">
+      <!-- Hero card -->
+      <section class="doctor-hero-card">
+        <div class="doctor-hero-avatar-wrap">
+          <div class="doctor-hero-avatar" id="doctor-avatar">D</div>
+          <div class="doctor-hero-avatar-badge"><i class="ri-stethoscope-line"></i></div>
+        </div>
+
+        <div class="doctor-hero-content">
+          <p class="doctor-specialty" id="doctor-specialty">General Physician</p>
+          <h1 class="doctor-name" id="doctor-name">Dr. Rajesh Kumar</h1>
+
+          <div class="doctor-meta-row">
+            <div class="doctor-meta-pill"><i class="ri-hospital-line"></i><span id="doctor-facility">Primary Health
+                Center</span></div>
+            <div class="doctor-meta-pill doctor-meta-id">ID: <span id="doctor-id">DOC-7722</span></div>
+          </div>
+
+          <div class="doctor-rating-row">
+            <div class="doctor-step-dots">
+              <span>1</span>
+              <span>2</span>
+              <span>3</span>
+            </div>
+            <p id="doctor-rating">Rating 4.8 · 120+ Consultations</p>
+          </div>
+        </div>
+
+        <div class="doctor-hero-actions">
+          <button type="button" class="doctor-icon-button" aria-label="Notifications"><i
+              class="ri-notification-3-line"></i></button>
+          <button type="button" class="doctor-icon-button" aria-label="Messages"><i
+              class="ri-message-3-line"></i></button>
+        </div>
+      </section>
+
+      <!-- Overview heading -->
+      <section class="doctor-overview-head">
+        <div>
+          <h2>Clinic Overview</h2>
+          <p>Real-time status of your medical facility</p>
+        </div>
+        <div class="doctor-head-actions">
+          <a href="../pages/patients.html" class="doctor-ghost-button"><i class="ri-add-line"></i><span>New Patient</span></a>
+          <button type="button" class="doctor-primary-button" onclick="openQrScanner()"><i
+              class="ri-qr-scan-2-line"></i><span>Scan QR</span></button>
+        </div>
+      </section>
+
+      <!-- ── MAIN DASHBOARD LAYOUT ── -->
+      <div class="dash-layout">
+
+        <!-- LEFT COLUMN -->
+        <div class="dash-left">
+
+          <!-- Row 1: Growth (wide) + Sync -->
+          <div class="dash-row">
+            <!-- Growth card spans full 2 cols -->
+            <div class="doctor-growth-card" style="grid-column: 1 / span 2;">
+              <div class="doctor-card-topline">
+                <p>Patient Growth</p>
+                <div class="doctor-growth-chip" id="stats-growth-chip">+18.4%</div>
+              </div>
+              <div class="doctor-growth-value" id="stats-patients">0</div>
+              <div class="doctor-growth-foot">
+                <span>Total registered patients</span>
+                <strong id="stats-growth-caption">vs last month</strong>
+              </div>
+              <div class="doctor-growth-wave" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <!-- Row 2: Sync + Referrals -->
+          <div class="dash-row">
+            <div class="doctor-sync-card">
+              <div class="doctor-sync-top">
+                <div class="doctor-sync-icon"><i class="ri-database-2-line"></i></div>
+                <div>
+                  <p>Sync Status</p>
+                  <h3 id="sync-status-title">Live &amp; Secure</h3>
+                </div>
+              </div>
+              <p class="doctor-sync-copy" id="sync-status-copy">Encrypted connection active</p>
+              <div class="doctor-storage-card">
+                <div class="doctor-storage-head">
+                  <span>Storage Used</span>
+                  <strong id="storage-status">2.4 / 10 GB</strong>
+                </div>
+                <div class="doctor-storage-bar"><span id="storage-bar-fill"></span></div>
+              </div>
+            </div>
+
+            <div class="doctor-mini-card doctor-referral-card">
+              <div class="doctor-mini-head">
+                <div class="doctor-mini-icon orange"><i class="ri-hospital-line"></i></div>
+                <div class="doctor-mini-badge" id="urgent-referrals-badge">0 urgent</div>
+              </div>
+              <p class="doctor-mini-label">Active Referrals</p>
+              <div class="doctor-mini-value" id="stats-referrals">0</div>
+              <div class="doctor-progress-row">
+                <span id="referral-status-label">Pending Review</span>
+                <strong id="referral-status-percent">0%</strong>
+              </div>
+              <div class="doctor-progress-bar"><span id="referral-progress-fill"></span></div>
+            </div>
+          </div>
+
+          <!-- Row 3: Appointments full width -->
+          <div class="doctor-mini-card doctor-appointments-card">
+            <div class="doctor-mini-head">
+              <div class="doctor-mini-icon blue"><i class="ri-calendar-line"></i></div>
+              <div class="doctor-next-slot">
+                <span>Next Up</span>
+                <strong id="appointments-next-up">2:30 PM</strong>
+              </div>
+            </div>
+            <p class="doctor-mini-label">Appointments</p>
+            <div class="doctor-mini-value" id="stats-appointments">8</div>
+            <div class="doctor-step-dots doctor-step-dots-blue" id="appointment-slots"></div>
+            <p class="doctor-mini-note" id="appointments-note">Preparation required for 2 cases</p>
+          </div>
+
+          <!-- Row 4: Recent Patients + Notifications (equal height, scrollable) -->
+          <div class="dash-row">
+            <!-- Recent Patients -->
+            <div class="doctor-sync-card dash-list-card">
+              <div class="dash-list-head">
+                <div class="dash-list-title">
+                  <span class="doctor-mini-icon soft"><i class="ri-user-heart-line"></i></span>
+                  Recent Patients
+                </div>
+                <a href="../pages/patients.html">View All</a>
+              </div>
+              <div class="dash-scroll" id="recent-patients-list">
+                <p class="doctor-empty-state">Loading patients...</p>
+              </div>
+            </div>
+
+            <!-- Notifications -->
+            <div class="doctor-sync-card dash-list-card">
+              <div class="dash-list-head">
+                <div class="dash-list-title">
+                  <span class="doctor-mini-icon soft"><i class="ri-notification-3-line"></i></span>
+                  Notifications
+                </div>
+              </div>
+              <div class="dash-scroll" id="notifications-list">
+                <p class="doctor-empty-state">Loading notifications...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 5: AI Assistant (Restored) -->
+          <div style="background: #fbfaf8; border-radius: 24px; padding: 28px; border: 1px solid rgba(24,18,12,0.07); box-shadow: 0 8px 24px rgba(24,18,12,0.04); margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+              <div>
+                <h3 style="font-family: Sora, sans-serif; font-size: 20px; color: #1b1714;">
+                  <i class="ri-robot-2-fill" style="color:#e8820c;"></i> Arogya AI Assistant
+                </h3>
+                <p style="color: #9c938b; font-size: 13px; margin-top: 4px;">Clinical insights & patient database analysis</p>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button onclick="ArogyaBot.clearChat()" class="doctor-ghost-button" style="width: 40px; padding: 0;"><i class="ri-refresh-line"></i></button>
+              </div>
+            </div>
+
+            <!-- Embedded Chat Interface -->
+            <div id="arogyabot-embedded-target" style="height: 500px; border: 1.5px solid #f2f0ed; border-radius: 24px; overflow: hidden; background: #fff; box-shadow: inset 0 2px 8px rgba(24,18,12,0.02);">
+              <div style="height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; color: #9c938b;">
+                <i class="ri-loader-4-line ri-spin" style="font-size: 32px;"></i>
+                <p style="font-size: 14px; font-weight: 600;">Connecting to Clinical Engine...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 6: Nearby Hospitals Map -->
+          <div style="background: #fbfaf8; border-radius: 24px; padding: 28px; border: 1px solid rgba(24,18,12,0.07); box-shadow: 0 8px 24px rgba(24,18,12,0.04);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+              <div>
+                <h3 style="font-family: Sora, sans-serif; font-size: 20px; color: #1b1714;"><i class="ri-hospital-line" style="color:#e8820c;"></i> Nearby Hospitals</h3>
+                <p style="color: #9c938b; font-size: 13px; margin-top: 4px;">Refer patients to closest facilities</p>
+              </div>
+              <button onclick="loadDoctorMap()" class="doctor-ghost-button"><i class="ri-focus-3-line"></i><span>Re-center</span></button>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 300px; gap: 20px; align-items: start;">
+              <div style="background: #fff; border-radius: 16px; overflow: hidden; height: 340px; box-shadow: 0 8px 24px rgba(24,18,12,0.07);">
+                <div id="doctor-map" style="width: 100%; height: 100%;"></div>
+              </div>
+              <div style="background: rgba(255,255,255,0.7); border-radius: 16px; padding: 18px; height: 340px; overflow-y: auto; box-shadow: 0 8px 24px rgba(24,18,12,0.05);">
+                <h4 style="font-size: 14px; font-weight: 800; color: #1b1714; margin-bottom: 14px;"><i class="ri-list-check-2" style="color:#e8820c;"></i> Nearest Centers</h4>
+                <div id="doctor-hospital-list">
+                  <p style="color: #9c938b; font-size: 14px;">Allow location access to see nearby hospitals.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /dash-left -->
+
+        <!-- RIGHT COLUMN: Quick Actions -->
+        <div class="dash-right">
+          <div class="dash-quick">
+            <div class="dash-quick-header">
+              <h3>Quick Actions</h3>
+              <p>Commonly used medical tools</p>
+            </div>
+            <div class="dash-quick-grid">
+              <a href="javascript:void(0)" onclick="openQrScanner()" class="doctor-quick-action accent-orange"><i class="ri-qr-scan-2-line"></i><span>Scan</span></a>
+              <a href="../pages/patients.html" class="doctor-quick-action accent-blue"><i class="ri-add-line"></i><span>Add</span></a>
+              <a href="../pages/dashboard.html" class="doctor-quick-action accent-purple"><i class="ri-vidicon-line"></i><span>Tele</span></a>
+              <a href="../pages/patients.html" class="doctor-quick-action accent-gold"><i class="ri-folder-shield-2-line"></i><span>Vault</span></a>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /dash-layout -->
+
+    </main>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <script src="../js/dashboard.js"></script>
+  <script src="../js/chatbot.js"></script>
+</body>
+
+</html>

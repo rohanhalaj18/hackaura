@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arogya - Patients</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+  <div id="toast" class="toast"></div>
+
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <i class="ri-heart-pulse-fill"></i> Arogya
+      </div>
+      <nav>
+        <a href="../pages/dashboard.html" class="nav-item"><i class="ri-dashboard-fill mr-2"></i> Dashboard</a>
+        <a href="../pages/patients.html" class="nav-item active"><i class="ri-user-heart-line mr-2"></i> Patients</a>
+      </nav>
+      <div style="margin-top: auto; padding: 24px;">
+        <button onclick="logout()" class="btn-small" style="width: 100%; border: 1px solid rgba(255,255,255,0.2);"><i class="ri-logout-box-r-line"></i> Sign Out</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="header">
+        <div>
+          <h1 class="page-title">Patients Directory</h1>
+          <p style="color: var(--text-muted); font-size: 14px;">Manage all registered patients.</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-primary" onclick="openModal('addPatientModal')" style="margin-top:0"><i class="ri-add-line"></i> New Patient</button>
+        </div>
+      </header>
+
+      <div class="glass-panel" style="padding: 24px;">
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Patient ID</th>
+                <th>Name</th>
+                <th>Age/Gender</th>
+                <th>Blood Grp</th>
+                <th>Phone</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="patients-list">
+              <tr><td colspan="6" style="text-align: center;">Loading patients...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add Patient Modal -->
+  <div class="modal-overlay" id="addPatientModal">
+    <div class="modal-content glass-panel" style="background: rgba(15, 23, 42, 0.95);">
+      <div class="modal-header">
+        <h3 class="modal-title">Register New Patient</h3>
+        <button class="modal-close" onclick="closeModal('addPatientModal')"><i class="ri-close-line"></i></button>
+      </div>
+      <form onsubmit="addPatient(event)">
+        <div class="input-group">
+          <label class="input-label">Full Name</label>
+          <input id="p-name" type="text" required>
+        </div>
+        <div class="input-group flex-row">
+          <div style="flex:1;">
+            <label class="input-label">Email Address</label>
+            <input id="p-email" type="email" placeholder="patient@example.com" required>
+          </div>
+          <div style="flex:1;">
+            <label class="input-label">Aadhaar</label>
+            <input id="p-aadhaar" type="text" placeholder="12-Digit Addhaar" required>
+          </div>
+        </div>
+        <div class="input-group flex-row">
+          <div style="flex:1;">
+            <label class="input-label">Age</label>
+            <input id="p-age" type="number" required>
+          </div>
+          <div style="flex:1;">
+            <label class="input-label">Gender</label>
+            <select id="p-gender" required>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div style="flex:1;">
+            <label class="input-label">Blood Grp</label>
+            <input id="p-bg" type="text" placeholder="O+">
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Phone</label>
+          <input id="p-phone" type="text" required>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Address</label>
+          <input id="p-address" type="text">
+        </div>
+        <button type="submit" class="btn-primary mt-4">Save Patient</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- QR Display Modal -->
+  <div class="modal-overlay" id="qrModal">
+    <div class="modal-content glass-panel" style="background: rgba(15, 23, 42, 0.95); text-align: center;">
+      <div class="modal-header">
+        <h3 class="modal-title">Patient QR Code</h3>
+        <button class="modal-close" onclick="closeModal('qrModal')"><i class="ri-close-line"></i></button>
+      </div>
+      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">
+        Have the patient scan this to instantly sync their profile, or print it for their records. The patient can login with their <b>Email</b> and default password: <b>Password123</b>.
+      </p>
+      <img id="qr-code-img" src="" alt="Patient QR Code" style="background: white; padding: 16px; border-radius: 12px; max-width: 200px; display: inline-block;">
+      <div style="margin-top: 20px; display: flex; justify-content: center; gap: 12px;">
+        <button class="btn-primary" onclick="downloadDoctorQR()"><i class="ri-download-cloud-2-line"></i> Save QR</button>
+        <button class="btn-primary" style="background: var(--surface-light); border: 1px solid rgba(255,255,255,0.1);" onclick="closeModal('qrModal')">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/patients.js"></script>
+  <script src="../js/chatbot.js"></script>
+</body>
+</html>

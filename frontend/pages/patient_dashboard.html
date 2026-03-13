@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arogya - My Health Dashboard</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  <!-- Load QRCode.js for frontend QR rendering -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+
+<body class="patient-vault-page">
+  <div id="toast" class="toast"></div>
+
+  <div class="patient-vault-shell">
+    <header class="patient-vault-topbar">
+      <a href="../pages/patient_dashboard.html" class="patient-vault-brand">
+        <span class="patient-vault-brand-mark"><i class="ri-pulse-line"></i></span>
+        <span>Arogya Vault</span>
+      </a>
+
+      <div class="patient-vault-userbar">
+        <div class="patient-vault-userchip">
+          <span class="patient-vault-useravatar" id="patient-chip-avatar">A</span>
+          <div>
+            <strong id="patient-chip-name">Arjun Singh</strong>
+            <span id="patient-chip-id">ID: PAT-8833</span>
+          </div>
+        </div>
+        <a href="../pages/login.html" class="patient-vault-iconbtn" aria-label="Sign out"><i
+            class="ri-logout-box-r-line"></i></a>
+      </div>
+    </header>
+
+    <main class="patient-vault-main">
+      <section class="patient-vault-hero">
+        <div class="patient-vault-avatar-wrap">
+          <div class="patient-vault-avatar" id="patient-avatar">A</div>
+          <div class="patient-vault-avatar-badge"><i class="ri-user-heart-line"></i></div>
+        </div>
+
+        <div class="patient-vault-hero-copy">
+          <p class="patient-vault-kicker">Patient Profile</p>
+          <h1 id="patient-name">Arjun Singh</h1>
+
+          <div class="patient-vault-pills">
+            <div class="patient-vault-pill"><i class="ri-shield-check-line"></i><span>Verified Account</span></div>
+            <div class="patient-vault-pill patient-vault-pill-id">ID: <span id="patient-id">PAT-8833</span></div>
+          </div>
+
+          <div class="patient-vault-qr-wrapper qr-pulse">
+            <div id="patient-qrcode" title="Patient QR Code"></div>
+            <button id="download-qr-btn" class="patient-vault-iconbtn" title="Download QR Code"><i
+                class="ri-download-2-line"></i></button>
+          </div>
+
+          <div class="patient-vault-status" id="patient-health-status-banner"><i class="ri-pulse-line"></i><span>Health
+              Status: Stable</span></div>
+        </div>
+      </section>
+
+      <section class="patient-vault-content">
+        <aside class="patient-vault-navpanel">
+          <a href="../pages/patient_dashboard.html" class="patient-vault-navitem active"><i
+              class="ri-shield-check-line"></i><span>Health Records</span></a>
+          <a href="../pages/my_records.html" class="patient-vault-navitem"><i class="ri-file-list-3-line"></i><span>My
+              Referrals</span></a>
+        </aside>
+
+        <div class="patient-vault-records">
+          <div class="patient-vault-heading">
+            <h2>Medical History</h2>
+            <button type="button" class="patient-vault-export" onclick="window.print()"><i
+                class="ri-download-line"></i><span>Export History</span></button>
+          </div>
+
+          <div class="patient-vault-stats">
+            <article class="patient-vault-stat warm">
+              <span>Blood Group</span>
+              <strong id="patient-blood-group">O+</strong>
+            </article>
+            <article class="patient-vault-stat cool">
+              <span>Visits</span>
+              <strong id="patient-visits">1</strong>
+            </article>
+            <article class="patient-vault-stat dark">
+              <span>Next Checkup</span>
+              <strong id="patient-next-checkup">March 25, 2024</strong>
+            </article>
+          </div>
+
+          <section class="patient-vault-consultations">
+            <h3>Recent Consultations</h3>
+            <div id="consultations-list">
+              <p class="patient-vault-empty">Loading medical history...</p>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- Nearby Hospitals Map -->
+      <section style="margin-top: 38px;">
+        <div class="patient-vault-heading" style="margin-bottom: 22px;">
+          <h2 style="font-size: 32px;"><i class="ri-hospital-line" style="color:#ee9800;"></i> Nearby Hospitals</h2>
+          <button onclick="loadPatientMap()" class="patient-vault-export">
+            <i class="ri-focus-3-line"></i> <span>Re-center</span>
+          </button>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start;">
+          <div style="background: #fff; border-radius: 20px; overflow: hidden; height: 380px; box-shadow: 0 16px 32px rgba(71,54,21,0.1);">
+            <div id="patient-map" style="width: 100%; height: 100%;"></div>
+          </div>
+          <div style="background: rgba(255,255,255,0.8); border-radius: 20px; padding: 20px; height: 380px; overflow-y: auto; box-shadow: 0 16px 32px rgba(71,54,21,0.08);">
+            <h3 style="font-family: Sora, sans-serif; font-size: 18px; color: #181310; margin-bottom: 16px;"><i class="ri-list-check-2" style="color:#ee9800;"></i> Nearest Centers</h3>
+            <div id="patient-hospital-list" style="display:flex; flex-direction:column; gap: 12px;">
+              <p style="color: #9c938b;">Allow location access to see nearby hospitals.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/patient_dashboard.js"></script>
+  <script src="../js/logout.js"></script>
+  <script src="../js/dashboard.js"></script>
+</body>
+
+</html>

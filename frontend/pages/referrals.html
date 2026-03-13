@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arogya - Referrals</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+
+<body class="doctor-dashboard-page">
+  <div id="toast" class="toast"></div>
+
+  <!-- QR Scanner Modal -->
+  <div class="modal-overlay" id="qr-scanner-modal">
+    <div class="modal-content glass" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2 class="modal-title">Scan Patient QR Code</h2>
+        <button class="modal-close" onclick="closeQrScanner()"><i class="ri-close-line"></i></button>
+      </div>
+      <div style="text-align: center; margin-bottom: 20px;">
+        <button type="button" class="btn-small active" id="btn-scan-camera"
+          style="margin-right: 10px; background: var(--primary);">Scan via Camera</button>
+        <button type="button" class="btn-small" id="btn-upload-qr">Upload QR Image</button>
+      </div>
+      <div id="qr-reader" style="width: 100%; border-radius: 12px; overflow: hidden; background: rgba(0,0,0,0.2);">
+      </div>
+      <div id="qr-upload-container"
+        style="display: none; text-align: center; padding: 40px 20px; border: 2px dashed rgba(255,255,255,0.2); border-radius: 12px;">
+        <i class="ri-upload-cloud-2-line"
+          style="font-size: 48px; color: var(--primary); margin-bottom: 16px; display: block;"></i>
+        <p style="margin-bottom: 16px;">Select a QR code image to upload and scan</p>
+        <input type="file" id="qr-upload-file" accept="image/*" style="display: none;">
+        <button type="button" class="doctor-primary-button"
+          onclick="document.getElementById('qr-upload-file').click()">Choose File</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="doctor-shell">
+    <aside class="doctor-sidebar">
+      <div class="doctor-brand">
+        <span class="doctor-brand-mark"><i class="ri-pulse-line"></i></span>
+        <span>Arogya-Vahini</span>
+      </div>
+
+      <div class="doctor-profile-card">
+        <div class="doctor-profile-icon"><i class="ri-user-heart-line"></i></div>
+        <div>
+          <p class="doctor-profile-label">Doctor Profile</p>
+          <h2 id="user-info">Dr. Rajesh Kumar</h2>
+        </div>
+      </div>
+
+      <nav class="doctor-sidebar-nav">
+        <a href="../pages/dashboard.html" class="doctor-nav-item"><i class="ri-pulse-line"></i><span>Overview</span></a>
+        <a href="../pages/referrals.html" class="doctor-nav-item active"><i
+            class="ri-file-transfer-line"></i><span>Referrals</span></a>
+        <a href="../pages/patients.html" class="doctor-nav-item"><i class="ri-user-heart-line"></i><span>Patients</span></a>
+        <a href="javascript:void(0)" onclick="openQrScanner()" class="doctor-nav-item"><i
+            class="ri-qr-scan-2-line"></i><span>Scan QR</span></a>
+        <a href="../pages/dashboard.html" class="doctor-nav-item"><i class="ri-database-2-line"></i><span>Health Vault</span></a>
+        <a href="../pages/dashboard.html" class="doctor-nav-item"><i class="ri-calendar-line"></i><span>Appointments</span></a>
+        <a href="../pages/dashboard.html" class="doctor-nav-item"><i
+            class="ri-vidicon-line"></i><span>Teleconsultation</span></a>
+      </nav>
+
+      <div class="doctor-system-status"><span></span> System Online</div>
+
+      <button onclick="logout()" class="doctor-signout"><i class="ri-logout-box-r-line"></i><span>Sign
+          Out</span></button>
+    </aside>
+
+    <main class="doctor-main">
+      <section class="doctor-overview-head" style="margin-bottom: 30px;">
+        <div>
+          <h1 class="page-title">Referrals Directory</h1>
+          <p style="color: var(--text-muted); font-size: 14px;">Incoming and outgoing patient referrals for specialised
+            care.</p>
+        </div>
+        <div class="doctor-head-actions">
+          <button type="button" class="doctor-primary-button" onclick="openQrScanner()"><i
+              class="ri-qr-scan-2-line"></i><span>Scan QR</span></button>
+        </div>
+      </section>
+
+      <div class="doctor-list-card" style="padding: 24px; display: block; overflow: visible;">
+        <div class="table-container">
+          <table style="width: 100%; border-collapse: separate; border-spacing: 0 8px;">
+            <thead>
+              <tr>
+                <th style="color: #181311; font-weight: 700; border-bottom: none;">Patient ID</th>
+                <th style="color: #181311; font-weight: 700; border-bottom: none;">Specialist</th>
+                <th style="color: #181311; font-weight: 700; border-bottom: none;">Target Hospital</th>
+                <th style="color: #181311; font-weight: 700; border-bottom: none;">Status</th>
+                <th style="color: #181311; font-weight: 700; border-bottom: none;">Last Updated</th>
+                <th style="color: #181311; font-weight: 700; border-bottom: none;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="referrals-list">
+              <tr>
+                <td colspan="6" style="text-align: center; padding: 24px;">Loading referrals...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <script src="../js/referrals.js"></script>
+  <script src="../js/chatbot.js"></script>
+</body>
+
+</html>

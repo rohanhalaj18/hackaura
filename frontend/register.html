@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arogya - Register</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="portal-auth-page">
+  <div id="toast" class="toast"></div>
+
+  <div class="portal-auth-shell">
+    <div class="portal-card portal-card-register">
+      <div class="portal-card-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M3 12h4l2-6 4 12 3-8 2 2h3" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+        </svg>
+      </div>
+      <h1 class="portal-card-title">Create Account</h1>
+      <p class="portal-card-subtitle">Register once and carry your health records across the network.</p>
+
+      <form onsubmit="register(event)">
+        <div class="portal-segmented portal-segmented-three" aria-label="Role selection">
+          <input type="radio" name="role-choice" id="register-role-doctor" value="doctor" checked>
+          <label for="register-role-doctor">Doctor</label>
+          <input type="radio" name="role-choice" id="register-role-patient" value="patient">
+          <label for="register-role-patient">Patient</label>
+          <input type="radio" name="role-choice" id="register-role-admin" value="admin">
+          <label for="register-role-admin">Admin</label>
+        </div>
+
+        <div class="portal-input-group">
+          <label class="portal-input-label" for="name">Full Name</label>
+          <input id="name" type="text" placeholder="Dr. John Doe" required>
+        </div>
+
+        <div class="portal-input-group">
+          <label class="portal-input-label" for="email">Email Address</label>
+          <input id="email" type="email" placeholder="john@hospital.com" required>
+        </div>
+
+        <div class="portal-input-row">
+          <div class="portal-input-group">
+            <label class="portal-input-label" for="phone">Phone</label>
+            <input id="phone" type="text" placeholder="+91" required>
+          </div>
+          <div class="portal-input-group">
+            <label class="portal-input-label" for="aadhaar">Aadhaar (ID)</label>
+            <input id="aadhaar" type="text" placeholder="12-digit number" required>
+          </div>
+        </div>
+
+        <div class="portal-input-group">
+          <label class="portal-input-label" for="password">Password</label>
+            <input id="password" type="password" placeholder="••••••••" required>
+        </div>
+
+        <input id="role" type="hidden" value="doctor">
+
+        <button type="submit" class="portal-submit-button">Register Account</button>
+      </form>
+
+      <div class="portal-auth-footer">
+        Already registered? <a href="login.html">Sign In</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arogya - Verify OTP</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="toast" class="toast"></div>
+
+  <div class="auth-wrapper">
+    <div class="glass auth-container">
+      <h2 class="auth-title">Verify Device</h2>
+      <p class="auth-subtitle">We've sent a 6-digit OTP to your email.</p>
+
+      <form onsubmit="verifyOtp(event)">
+        <div class="input-group">
+          <label class="input-label" for="otp">Enter OTP</label>
+          <input id="otp" type="text" placeholder="123456" maxlength="6" required>
+        </div>
+
+        <button type="submit" class="btn-primary">Verify & Login</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

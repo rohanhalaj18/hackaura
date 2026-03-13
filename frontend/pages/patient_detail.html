@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arogya - Patient Case File</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f6f3ee;
+      color: #1f1a17;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 284px minmax(0, 1fr);
+    }
+
+    /* ── Sidebar ── */
+    .pd-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 32px 22px 28px;
+      background: #fbfaf8;
+      border-right: 1px solid rgba(24, 18, 12, 0.08);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .pd-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Sora', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #1b1714;
+      text-decoration: none;
+    }
+
+    .pd-brand-mark {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #f6ab0f 0%, #ef9b00 100%);
+      color: #fffdf6;
+      font-size: 20px;
+      box-shadow: 0 10px 20px rgba(239, 155, 0, 0.22);
+    }
+
+    /* Patient chip in sidebar */
+    .pd-patient-chip {
+      padding: 18px 16px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #fff8e7 0%, #fef3d0 100%);
+      border: 1px solid rgba(239, 155, 0, 0.18);
+    }
+
+    .pd-patient-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #f6ab0f 0%, #ef9b00 100%);
+      color: #fff;
+      font-family: 'Sora', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .pd-patient-name {
+      font-family: 'Sora', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #1b1714;
+      margin-bottom: 2px;
+    }
+
+    .pd-patient-meta {
+      font-size: 12px;
+      color: #9c938b;
+      font-weight: 500;
+    }
+
+    .pd-patient-id {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: rgba(239, 155, 0, 0.1);
+      color: #c67600;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* Sidebar nav */
+    .pd-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .pd-nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 16px;
+      border-radius: 14px;
+      color: #756d65;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .pd-nav a:hover {
+      background: rgba(239, 155, 0, 0.08);
+      color: #c67600;
+    }
+
+    .pd-nav a i {
+      font-size: 18px;
+    }
+
+    .pd-signout {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 16px;
+      border-radius: 14px;
+      color: #9c938b;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s;
+      width: 100%;
+    }
+
+    .pd-signout:hover {
+      color: #e55353;
+      background: rgba(229, 83, 83, 0.06);
+    }
+
+    /* ── Main ── */
+    .pd-main {
+      padding: 36px 40px 60px;
+      min-height: 100vh;
+    }
+
+    /* Hero bar */
+    .pd-hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 28px 32px;
+      border-radius: 24px;
+      background: #fbfaf8;
+      border: 1px solid rgba(24, 18, 12, 0.07);
+      margin-bottom: 32px;
+    }
+
+    .pd-hero-left {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .pd-hero-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #f6ab0f 0%, #ef9b00 100%);
+      color: #fff;
+      font-family: 'Sora', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 12px 24px rgba(239, 155, 0, 0.2);
+    }
+
+    .pd-hero-name {
+      font-family: 'Sora', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: #1b1714;
+    }
+
+    .pd-hero-subtitle {
+      font-size: 14px;
+      color: #9c938b;
+      margin-top: 4px;
+    }
+
+    /* AI Button */
+    .pd-ai-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 22px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+      color:  #FFD700;
+      font-size: 14px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+      transition: all 0.25s;
+    }
+
+    .pd-ai-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(139, 92, 246, 0.4);
+    }
+
+    .pd-ai-btn:disabled {
+      opacity: 0.65;
+      transform: none;
+      cursor: not-allowed;
+    }
+
+    /* Grid layout */
+    .pd-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    /* Cards */
+    .pd-card {
+      padding: 26px 28px;
+      border-radius: 22px;
+      background: #fbfaf8;
+      border: 1px solid rgba(24, 18, 12, 0.07);
+      box-shadow: 0 8px 24px rgba(24, 18, 12, 0.04);
+    }
+
+    .pd-card-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      font-family: 'Sora', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #1b1714;
+    }
+
+    .pd-card-title i {
+      color: #e8820c;
+      font-size: 20px;
+      margin-right: 6px;
+    }
+
+    /* AI card full-width */
+    .pd-card-ai {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, #1e1025 0%, #160d22 100%);
+      border: 1px solid rgba(139, 92, 246, 0.25);
+    }
+
+    .pd-card-ai .pd-card-title {
+      color: #c4b5fd;
+    }
+
+    .pd-card-ai .pd-card-title i {
+      color: #a78bfa;
+    }
+
+    /* Add button */
+    .pd-add-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 10px;
+      background: rgba(232, 130, 12, 0.1);
+      color: #c67600;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+
+    .pd-add-btn:hover {
+      background: rgba(232, 130, 12, 0.18);
+    }
+
+    /* Symptom / report list items */
+    .pd-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .pd-list-item {
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(246, 171, 15, 0.06);
+      border: 1px solid rgba(246, 171, 15, 0.12);
+    }
+
+    .pd-list-item-title {
+      font-weight: 600;
+      color: #1b1714;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .pd-list-item-meta {
+      font-size: 12px;
+      color: #9c938b;
+    }
+
+    .pd-empty {
+      color: #9c938b;
+      font-size: 14px;
+      padding: 16px 0;
+    }
+
+    /* Reports with link */
+    .pd-report-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .pd-report-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: #8b5cf6;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: rgba(139, 92, 246, 0.08);
+    }
+
+    .pd-report-link:hover {
+      background: rgba(139, 92, 246, 0.15);
+    }
+
+    /* Referral card */
+    .pd-referral-item {
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: rgba(24, 18, 12, 0.03);
+      border: 1px solid rgba(24, 18, 12, 0.06);
+      margin-bottom: 10px;
+    }
+
+    .pd-referral-to {
+      font-weight: 700;
+      color: #1b1714;
+      font-size: 14px;
+    }
+
+    .pd-referral-meta {
+      font-size: 12px;
+      color: #9c938b;
+      margin-top: 4px;
+    }
+
+    /* Badge */
+    .pd-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .pd-badge.high {
+      background: rgba(239, 68, 68, 0.12);
+      color: #dc2626;
+    }
+
+    .pd-badge.medium {
+      background: rgba(234, 179, 8, 0.12);
+      color: #ca8a04;
+    }
+
+    .pd-badge.low {
+      background: rgba(34, 197, 94, 0.12);
+      color: #16a34a;
+    }
+
+    .pd-badge.pending {
+      background: rgba(234, 179, 8, 0.1);
+      color: #ca8a04;
+    }
+
+    .pd-badge.accepted {
+      background: rgba(34, 197, 94, 0.1);
+      color: #16a34a;
+    }
+
+    /* AI output */
+    #ai-output {
+      font-size: 14px;
+      line-height: 1.75;
+      white-space: pre-wrap;
+      color: #d4c8f8;
+      min-height: 60px;
+    }
+
+    /* Risk badge row */
+    #ai-risk-badge {
+      margin-top: 14px;
+    }
+
+    /* Modal overlay */
+    .pd-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 8, 5, 0.55);
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pd-modal-overlay.active {
+      display: flex;
+    }
+
+    .pd-modal {
+      background: #fbfaf8;
+      border-radius: 24px;
+      padding: 32px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 32px 64px rgba(24, 18, 12, 0.18);
+    }
+
+    .pd-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .pd-modal-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #1b1714;
+    }
+
+    .pd-modal-close {
+      background: none;
+      border: none;
+      font-size: 22px;
+      color: #9c938b;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .pd-modal-close:hover {
+      color: #e55353;
+    }
+
+    .pd-form-group {
+      margin-bottom: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .pd-form-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #756d65;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .pd-form-group input,
+    .pd-form-group textarea,
+    .pd-form-group select {
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(24, 18, 12, 0.1);
+      background: #fff;
+      font-size: 14px;
+      color: #1b1714;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border 0.2s;
+      width: 100%;
+    }
+
+    .pd-form-group input:focus,
+    .pd-form-group textarea:focus {
+      border-color: #f6ab0f;
+    }
+
+    .pd-form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .pd-submit-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      background: linear-gradient(180deg, #f6ab0f 0%, #ef9b00 100%);
+      color: #fffdf6;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: all 0.25s;
+      box-shadow: 0 8px 20px rgba(239, 155, 0, 0.22);
+    }
+
+    .pd-submit-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(239, 155, 0, 0.3);
+    }
+
+    .pd-ghost-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      background: rgba(139, 92, 246, 0.06);
+      color: #8b5cf6;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .pd-ghost-btn:hover {
+      background: rgba(139, 92, 246, 0.12);
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 14px 22px;
+      border-radius: 14px;
+      background: #22c55e;
+      color: #fff;
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 3000;
+    }
+
+    #toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    #toast.error {
+      background: #ef4444;
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+      body {
+        grid-template-columns: 240px 1fr;
+      }
+
+      .pd-main {
+        padding: 28px 24px 48px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        grid-template-columns: 1fr;
+      }
+
+      .pd-sidebar {
+        display: none;
+      }
+
+      .pd-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pd-card-ai {
+        grid-column: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="toast"></div>
+
+  <!-- ── Sidebar ── -->
+  <aside class="pd-sidebar">
+    <a href="../pages/dashboard.html" class="pd-brand">
+      <span class="pd-brand-mark"><i class="ri-pulse-line"></i></span>
+      Arogya-Vahini
+    </a>
+
+    <div class="pd-patient-chip">
+      <div class="pd-patient-avatar" id="sb-avatar">P</div>
+      <div class="pd-patient-name" id="sb-name">Loading...</div>
+      <div class="pd-patient-meta" id="sb-meta">--</div>
+      <div class="pd-patient-id"><i class="ri-shield-check-line"></i> <span id="sb-id">---</span></div>
+    </div>
+
+    <nav class="pd-nav">
+      <a href="../pages/dashboard.html"><i class="ri-layout-grid-line"></i> Dashboard</a>
+      <a href="../pages/patients.html"><i class="ri-arrow-left-s-line"></i> Patient List</a>
+      <a href="../pages/referrals.html"><i class="ri-file-transfer-line"></i> Referrals</a>
+    </nav>
+
+    <button class="pd-signout" onclick="logout()">
+      <i class="ri-logout-box-r-line"></i> Sign Out
+    </button>
+  </aside>
+
+  <!-- ── Main ── -->
+  <main class="pd-main">
+
+    <!-- Hero bar -->
+    <div class="pd-hero">
+      <div class="pd-hero-left">
+        <div class="pd-hero-avatar" id="hero-avatar">P</div>
+        <div>
+          <div class="pd-hero-name" id="patient-name">Loading patient...</div>
+          <div class="pd-hero-subtitle" id="patient-meta">ID: -- | Age: -- | Blood Group: --</div>
+        </div>
+      </div>
+      <button class="pd-ai-btn" id="ai-btn" onclick="analyzeAI()">
+        <i class="ri-magic-line"></i> Run AI Analysis
+      </button>
+      <button class="pd-ai-btn"
+        style="background: var(--surface-light); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 20px rgba(0,0,0,0.1);"
+        onclick="document.getElementById('share-email').value = window.patientEmail; openModal('shareModal')">
+        <i class="ri-mail-send-line"></i> Send to Email
+      </button>
+    </div>
+
+    <!-- Share Modal -->
+    <div class="pd-modal-overlay" id="shareModal">
+      <div class="pd-modal" style="max-width: 450px;">
+        <div class="pd-modal-header">
+          <h3 class="pd-modal-title"><i class="ri-mail-send-line" style="color:#e8820c;"></i> Share Record Summary</h3>
+          <button class="pd-modal-close" onclick="closeModal('shareModal')"><i class="ri-close-line"></i></button>
+        </div>
+        <p style="font-size: 14px; color: #9c938b; margin-bottom: 24px;">Send a beautifully formatted medical summary
+          directly to the patient.</p>
+        <form onsubmit="shareRecordEmail(event)">
+          <div class="pd-form-group">
+            <label class="pd-form-label">Recipient Email</label>
+            <input id="share-email" type="email" placeholder="patient@example.com" required>
+          </div>
+          <div class="pd-form-group"
+            style="display: flex; flex-direction: row; align-items: center; gap: 12px; margin-top: 10px;">
+            <input type="checkbox" id="share-ai-check" checked style="width: 18px; height: 18px; cursor: pointer;">
+            <label for="share-ai-check"
+              style="font-size: 14px; cursor: pointer; color: #1b1714; font-weight: 600;">Include AI Diagnosis &
+              Summary</label>
+          </div>
+          <p style="font-size: 12px; color: #e8820c; margin: 12px 0 24px; font-weight: 600;">
+            <i class="ri-sparkling-fill"></i> Transmitting with high-security encryption
+          </p>
+          <button type="submit" class="pd-submit-btn">Send Medical Summary</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Content grid -->
+    <div class="pd-grid">
+
+      <!-- Symptoms -->
+      <div class="pd-card">
+        <div class="pd-card-title">
+          <span><i class="ri-stethoscope-line"></i> Symptoms Record</span>
+          <button class="pd-add-btn" onclick="openModal('symptomModal')">
+            <i class="ri-add-line"></i> Add
+          </button>
+        </div>
+        <ul class="pd-list" id="symptoms-list">
+          <li class="pd-empty">Loading...</li>
+        </ul>
+      </div>
+
+      <!-- Reports -->
+      <div class="pd-card">
+        <div class="pd-card-title">
+          <span><i class="ri-file-text-line"></i> Medical Reports</span>
+          <button class="pd-add-btn" onclick="openModal('reportModal')">
+            <i class="ri-upload-cloud-2-line"></i> Upload
+          </button>
+        </div>
+        <ul class="pd-list" id="reports-list">
+          <li class="pd-empty">Loading...</li>
+        </ul>
+      </div>
+
+      <!-- Referrals -->
+      <div class="pd-card">
+        <div class="pd-card-title">
+          <span><i class="ri-hospital-line"></i> Referrals &amp; Alerts</span>
+          <button class="pd-add-btn" onclick="openModal('referralModal')">
+            <i class="ri-file-transfer-line"></i> Refer
+          </button>
+        </div>
+        <div id="referrals-list">
+          <p class="pd-empty">Loading...</p>
+        </div>
+      </div>
+
+      <!-- Vitals snapshot -->
+      <div class="pd-card">
+        <div class="pd-card-title">
+          <span><i class="ri-heart-pulse-line"></i> Latest Vitals</span>
+        </div>
+        <div id="vitals-panel" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div
+            style="padding:14px; border-radius:14px; background:rgba(246,171,15,0.07); border:1px solid rgba(246,171,15,0.15);">
+            <div
+              style="font-size:11px; font-weight:800; color:#c67600; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px;">
+              Temperature</div>
+            <div style="font-family:'Sora',sans-serif; font-size:28px; font-weight:800; color:#1b1714;" id="v-temp">--
+            </div>
+            <div style="font-size:12px; color:#9c938b;">°F</div>
+          </div>
+          <div
+            style="padding:14px; border-radius:14px; background:rgba(37,99,235,0.05); border:1px solid rgba(37,99,235,0.1);">
+            <div
+              style="font-size:11px; font-weight:800; color:#1d4ed8; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px;">
+              Blood Pressure</div>
+            <div style="font-family:'Sora',sans-serif; font-size:28px; font-weight:800; color:#1b1714;" id="v-bp">--
+            </div>
+            <div style="font-size:12px; color:#9c938b;">mmHg</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Output — full width -->
+      <div class="pd-card pd-card-ai">
+        <div class="pd-card-title">
+          <span><i class="ri-robot-2-line"></i> AI Diagnostic Summary</span>
+          <span style="font-size:12px; color:#7c6fa0; font-weight:500;">Powered by Arogya AI</span>
+        </div>
+        <div id="ai-output">No AI analysis yet. Click <strong style="color:#c4b5fd;">"Run AI Analysis"</strong> to
+          generate insights.</div>
+        <div id="ai-risk-badge"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ── Symptom Modal ── -->
+  <div class="pd-modal-overlay" id="symptomModal">
+    <div class="pd-modal">
+      <div class="pd-modal-header">
+        <h3 class="pd-modal-title"><i class="ri-stethoscope-line" style="color:#e8820c;"></i> Log Symptoms</h3>
+        <button class="pd-modal-close" onclick="closeModal('symptomModal')"><i class="ri-close-line"></i></button>
+      </div>
+      <form onsubmit="addSymptom(event)">
+        <div class="pd-form-group">
+          <label class="pd-form-label">Symptoms (comma separated)</label>
+          <input id="sym-text" type="text" placeholder="Fever, cough, chest pain..." required>
+        </div>
+        <div class="pd-form-row">
+          <div class="pd-form-group">
+            <label class="pd-form-label">Temperature (°F)</label>
+            <input id="sym-temp" type="number" step="0.1" placeholder="98.6">
+          </div>
+          <div class="pd-form-group">
+            <label class="pd-form-label">Blood Pressure</label>
+            <input id="sym-bp" type="text" placeholder="120/80">
+          </div>
+        </div>
+        <div class="pd-form-group">
+          <label class="pd-form-label">Doctor Notes</label>
+          <textarea id="sym-notes" rows="3" placeholder="Additional clinical notes..."></textarea>
+        </div>
+        <button type="submit" class="pd-submit-btn">Save Symptom Record</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Report Upload Modal ── -->
+  <div class="pd-modal-overlay" id="reportModal">
+    <div class="pd-modal">
+      <div class="pd-modal-header">
+        <h3 class="pd-modal-title"><i class="ri-file-text-line" style="color:#e8820c;"></i> Upload Medical Report</h3>
+        <button class="pd-modal-close" onclick="closeModal('reportModal')"><i class="ri-close-line"></i></button>
+      </div>
+      <form onsubmit="uploadReport(event)">
+        <div class="pd-form-group">
+          <label class="pd-form-label">Report Type</label>
+          <input id="rep-type" type="text" placeholder="e.g. X-Ray, Blood Test, ECG" required>
+        </div>
+        <div class="pd-form-group">
+          <label class="pd-form-label">Document / File</label>
+          <input id="rep-file" type="file" accept="image/*,.pdf" required style="padding:10px;">
+        </div>
+        <div class="pd-form-group">
+          <label class="pd-form-label">Notes</label>
+          <textarea id="rep-notes" rows="2" placeholder="Any additional notes..."></textarea>
+        </div>
+        <button type="submit" class="pd-submit-btn">Upload Document</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Referral Modal ── -->
+  <div class="pd-modal-overlay" id="referralModal">
+    <div class="pd-modal">
+      <div class="pd-modal-header">
+        <h3 class="pd-modal-title"><i class="ri-hospital-line" style="color:#e8820c;"></i> Create Referral</h3>
+        <button class="pd-modal-close" onclick="closeModal('referralModal')"><i class="ri-close-line"></i></button>
+      </div>
+      <form onsubmit="createReferral(event)">
+        <div class="pd-form-group">
+          <label class="pd-form-label">Required Specialist</label>
+          <input id="ref-specialist" type="text" placeholder="Cardiologist, Neurologist..." required>
+        </div>
+        <div class="pd-form-group">
+          <label class="pd-form-label">Recommended Hospital</label>
+          <input id="ref-hospital" type="text" placeholder="City General Hospital">
+        </div>
+        <div class="pd-form-group">
+          <label class="pd-form-label">Summary Notes for Specialist</label>
+          <textarea id="ref-summary" rows="3" placeholder="Clinical context or AI summary..."></textarea>
+        </div>
+        <button type="button" class="pd-ghost-btn" style="margin-bottom:14px;"
+          onclick="document.getElementById('ref-summary').value = document.getElementById('ai-output').textContent.trim()">
+          <i class="ri-sparkling-line"></i> Fill with AI Summary
+        </button>
+        <button type="submit" class="pd-submit-btn">Issue Referral</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/patient_detail.js"></script>
+  <script src="../js/chatbot.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arogya - Nearby Hospitals</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+  <div id="toast" class="toast"></div>
+
+  <div class="dashboard-layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <i class="ri-heart-pulse-fill"></i> Arogya
+      </div>
+      <nav>
+        <a href="../pages/dashboard.html" class="nav-item"><i class="ri-dashboard-fill mr-2"></i> Dashboard</a>
+        <a href="../pages/patients.html" class="nav-item"><i class="ri-user-heart-line mr-2"></i> Patients</a>
+        <a href="../pages/alerts.html" class="nav-item"><i class="ri-alert-line mr-2"></i> AI Alerts</a>
+        <a href="../pages/referrals.html" class="nav-item"><i class="ri-file-transfer-line mr-2"></i> Referrals</a>
+        <a href="../pages/hospitals.html" class="nav-item active"><i class="ri-hospital-line mr-2"></i> Nearby Hospitals</a>
+      </nav>
+      <div style="margin-top: auto; padding: 24px;">
+        <button onclick="logout()" class="btn-small" style="width: 100%; border: 1px solid rgba(255,255,255,0.2);"><i class="ri-logout-box-r-line"></i> Sign Out</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="header">
+        <div>
+          <h1 class="page-title">Hospital Network</h1>
+          <p style="color: var(--text-muted); font-size: 14px;">Find available hospitals near your location.</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-primary" onclick="locateAndLoad()" style="margin-top:0"><i class="ri-map-pin-line"></i> Get Nearby</button>
+        </div>
+      </header>
+
+      <div class="glass-panel" style="padding: 24px;">
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Hospital Name</th>
+                <th>Distance (km)</th>
+                <th>Specialties</th>
+                <th>Contact</th>
+              </tr>
+            </thead>
+            <tbody id="hospitals-list">
+              <tr><td colspan="4" style="text-align: center;">Click "Get Nearby" to search based on your location.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/hospitals.js"></script>
+  <script src="../js/chatbot.js"></script>
+</body>
+</html>
