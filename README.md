@@ -96,4 +96,4 @@ Arogya-Vahini uses a custom **"Arogya Gold & Dark Slate"** theme. We prioritize:
 This project is developed for the **Hackaura Hackathon**. All rights reserved.
 
 ---
-*Developed with ❤️ by Team Arogya.*
+*Developed with ❤️ by Team Phantom crew.*
